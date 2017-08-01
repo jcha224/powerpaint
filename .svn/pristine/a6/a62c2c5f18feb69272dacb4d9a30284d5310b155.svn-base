@@ -1,0 +1,9 @@
+package tool;
+
+public class Pencil extends AbstractTool {
+
+    public Pencil() {
+        // TODO Auto-generated constructor stub
+    }
+
+}

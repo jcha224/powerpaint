@@ -1,0 +1,9 @@
+package gui;
+
+public class PowerPaintGUI {
+
+    public PowerPaintGUI() {
+        // TODO Auto-generated constructor stub
+    }
+
+}

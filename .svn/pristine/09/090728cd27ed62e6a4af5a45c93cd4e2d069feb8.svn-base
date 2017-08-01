@@ -1,0 +1,266 @@
+/**
+ * TCSS 305 - SPRING 2016
+ * Assignment 5 - PowerPaint
+ */
+package gui;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+//import java.awt.FlowLayout;
+//import java.awt.GridLayout;
+//import java.awt.event.ActionEvent;
+//import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowEvent;
+
+import javax.swing.ButtonGroup;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JColorChooser;
+//import javax.swing.JButton;
+//import javax.swing.JComponent;
+//import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JRadioButtonMenuItem;
+import javax.swing.JSlider;
+//import javax.swing.JPanel;
+//import javax.swing.JRadioButton;
+import javax.swing.JToggleButton;
+import javax.swing.JToolBar;
+
+
+
+
+/**
+ * This class contains the implementation of the GUI.
+ * @author John Chang
+ * @version 5 May 2016
+ */
+public class PowerPaintGUI extends JFrame {
+
+    /**
+     * Default generated serial number.
+     */
+    private static final long serialVersionUID = -6870003831272220140L;
+    
+    /** The default size of this JPanel. */
+    private static final int WINDOW_SIZE = 600;
+    
+    /** The default pane width. */
+    private static final int PANE_WIDTH = 300;
+
+    /** The file menu item called close. */
+    private JMenuItem close;
+    
+//    /** The file chooser to retrieve icons */
+//    private JFileChooser myFileChoose;
+    
+    /** The panel that will contain the drawing space. */
+    private JLabel myDrawArea;
+    
+
+    
+    /**
+     * Instantiates the the GUI.
+     */
+    public PowerPaintGUI() {
+        super("TCSS 305 PowerPaint");
+        myDrawArea = new JLabel();
+//        myFileChoose = new JFileChooser();
+        close = new JMenuItem("Close");
+        
+    }
+
+    /**
+     * Called by main class to start the GUI implementation. 
+     */
+    public void start() {
+        setLayout(new BorderLayout());
+        setLocationRelativeTo(null);
+        setIconImage(getIcon("van-Gogh-icon.gif").getImage());
+        myDrawArea.setPreferredSize(new Dimension(WINDOW_SIZE, PANE_WIDTH));
+        myDrawArea.setOpaque(true);
+        add(myDrawArea);
+        
+        
+        setJMenuBar(createMenu(this));
+        add(createToolBar(), BorderLayout.SOUTH);
+        
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setVisible(true);
+        pack();
+    }
+    
+    /** 
+     * Creates a tool bar for window.
+     * @return JToolBar with toggle buttons
+     */
+    public JToolBar createToolBar() {
+        final JToolBar toolBar = new JToolBar();
+        final ButtonGroup buttonGroup = new ButtonGroup();
+        
+        JToggleButton button = new JToggleButton("Pencil");
+        buttonGroup.add(button);
+        toolBar.add(button);
+        button = new JToggleButton("Line");
+        buttonGroup.add(button);
+        toolBar.add(button);
+        button = new JToggleButton("Rectangle");
+        buttonGroup.add(button);
+        toolBar.add(button);
+        button = new JToggleButton("Elipse");
+        buttonGroup.add(button);
+        toolBar.add(button);
+        return toolBar;
+    }
+    
+    /**
+     * Creates and returns a JBar
+     * @param theFrame
+     * @return the menu bar
+     */
+    private JMenuBar createMenu(final JFrame theFrame) {
+        final JMenuBar menuBar = new JMenuBar();
+         
+        menuBar.add(createFileMenu(theFrame));
+        menuBar.add(createOptionsMenu());
+        menuBar.add(createToolsMenu());
+        menuBar.add(createHelpMenu());
+        
+        return menuBar;
+    }
+    
+    /**
+     * Creates help menu.
+     * @return the menu
+     */
+    private JMenu createFileMenu(JFrame theFrame) {
+        JMenu menu = new JMenu("File");
+        menu.setMnemonic(KeyEvent.VK_F);
+        JMenuItem quit = new JMenuItem("Quit");
+        menu.add(close);
+        menu.add(quit);
+        close.setEnabled(false);
+        quit.addActionListener(new ActionListener() {
+                    
+                @Override
+                public void actionPerformed(final ActionEvent theEvent) {
+                    theFrame.dispatchEvent(new WindowEvent(
+                                     theFrame, WindowEvent.WINDOW_CLOSING));
+                }
+            });
+        
+        return menu;
+    }
+    
+    /**
+     * Creates tool menu.
+     * @return the menu
+     */
+    private JMenu createToolsMenu() {
+        JMenu menu = new JMenu("Tools");
+        menu.setMnemonic(KeyEvent.VK_T);
+        ButtonGroup group = new ButtonGroup();
+        menu.add(createToolItems("Pencil", group));
+        menu.add(createToolItems("Line", group));
+        menu.add(createToolItems("Rectangle", group));
+        menu.add(createToolItems("Elipse", group));
+        return menu;
+    }
+    
+    /**
+     * Helper method creates menu items.
+     * @param theName the name of menu item
+     * @param theGroup the group of radio button menu items
+     * @return the menu item button
+     */
+    private JRadioButtonMenuItem createToolItems(final String theName, 
+                                                 final ButtonGroup theGroup) {        
+        final JRadioButtonMenuItem tool = new JRadioButtonMenuItem(theName);
+        theGroup.add(tool);
+        return tool;
+    }
+    
+    private JMenu createOptionsMenu() {
+        JMenu menu = new JMenu("Options");
+        menu.setMnemonic(KeyEvent.VK_O);
+        JSlider slider = new JSlider(JSlider.HORIZONTAL, 0, 20, 1);
+        slider.setMajorTickSpacing(5);
+        slider.setMinorTickSpacing(1);
+        slider.setPaintTicks(true);
+        slider.setPaintLabels(true);
+        final ButtonGroup group = new ButtonGroup();
+        JCheckBoxMenuItem checkBox = new JCheckBoxMenuItem("Fill");
+        menu.add(slider);
+        menu.addSeparator();
+        menu.add(createColorChooser("Draw Color...", group));
+        menu.add(createColorChooser("Fill Color...", group));
+        menu.addSeparator();
+        menu.add(checkBox);
+        return menu;
+    }
+
+    private JMenuItem createColorChooser(String theName, ButtonGroup theGroup) {
+        final JMenuItem chooser = new JMenuItem(theName);
+        theGroup.add(chooser);
+        chooser.addActionListener(new ActionListener() {
+            
+            @Override
+            public void actionPerformed(final ActionEvent theEvent) {
+                final Color result = JColorChooser.showDialog(null, "Color Chooser", null);
+                if (result != null) {
+                    theGroup.clearSelection();
+                    chooser.setIcon(new Icon(){
+                        @Override
+                        public void paintIcon(Component c, Graphics g, int x, int y) {
+                            g.setColor(result);
+                            ((Graphics2D)g).fill3DRect(20, 5, 12, 12, true);
+                        }
+                        @Override
+                        public int getIconWidth() {
+                            return 12;
+                        }
+                        @Override
+                        public int getIconHeight() {
+                            return 12;
+                        }
+                    });
+                }
+            }
+        });
+        
+        return chooser;
+    }
+
+    private JMenu createHelpMenu() {
+        JMenu menu = new JMenu("Help");
+        menu.setMnemonic(KeyEvent.VK_H);
+        javax.swing.JOptionPane.showMessageDialog(null, "TCSS");
+        return menu;
+    }
+
+    /**
+     * Returns an icon for the JFrame.
+     * 
+     * @param theIcon the image directory
+     * @return the icon
+     */
+    public ImageIcon getIcon(final String theIcon) {
+        final ImageIcon image = new ImageIcon(
+                          "C:\\Users\\John\\305\\username-powerpaint\\images\\" + theIcon);
+        
+        return image;
+    }
+}
+

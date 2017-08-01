@@ -1,0 +1,9 @@
+package tool;
+
+public class AbstractTool implements Tool{
+
+    public AbstractTool() {
+        // TODO Auto-generated constructor stub
+    }
+
+}

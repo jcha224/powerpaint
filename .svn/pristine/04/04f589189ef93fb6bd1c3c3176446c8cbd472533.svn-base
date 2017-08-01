@@ -1,0 +1,28 @@
+package draw;
+
+import java.awt.LayoutManager;
+
+import javax.swing.JPanel;
+
+public class DrawPanel extends JPanel {
+
+    public DrawPanel() {
+        // TODO Auto-generated constructor stub
+    }
+
+    public DrawPanel(LayoutManager arg0) {
+        super(arg0);
+        // TODO Auto-generated constructor stub
+    }
+
+    public DrawPanel(boolean arg0) {
+        super(arg0);
+        // TODO Auto-generated constructor stub
+    }
+
+    public DrawPanel(LayoutManager arg0, boolean arg1) {
+        super(arg0, arg1);
+        // TODO Auto-generated constructor stub
+    }
+
+}
